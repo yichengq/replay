@@ -1,8 +1,65 @@
 <html>
 	<head>
 		<title>The Reason Playground</title>
+		<link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/codemirror.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/codemirror.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/theme/monokai.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/theme/solarized.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/mode/mllike/mllike.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/mode/javascript/javascript.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/addon/edit/matchbrackets.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/addon/edit/closebrackets.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script src="/static/playground.js"></script>
+		<link rel="stylesheet" href="/static/replay.css">
+		<script>
+			'use strict';
+$(document).ready(function() {
+	var reCodeMirror = CodeMirror.fromTextArea(
+		document.getElementById("recode"),
+		{
+			mode:'text/x-ocaml',
+			lineNumbers: true,
+			lineWrapping: true,
+			styleActiveLine:true,
+			theme: "solarized"
+		});
+	reCodeMirror.setSize(null,"100%");
+	var outputMirror = CodeMirror(
+		document.getElementById("output"),
+		{
+			mode : 'javascript',
+			readOnly: true,
+			lineWrapping: true,
+			lineNumbers: true,
+			theme: "monokai"
+		});
+	outputMirror.setSize(null,"100%");
+	playground({
+		'runEl':        '#run',
+		'fmtEl':        '#fmt',
+		'shareEl':      '#share',
+		'shareURLEl':   '#shareURL',
+		'codeMirror':   reCodeMirror,
+		'outputMirror':    outputMirror,
+	});
+});
+		</script>
 	</head>
 	<body>
+		<div id="banner">
+			<div id="head" itemprop="name"><img src="/static/logo.png" id="logo"> Playground</div>
+			<div id="controls">
+				<input type="button" value="Run" id="run">
+				<input type="button" value="Format" id="fmt">
+				<input type="button" value="Share" id="share">
+				<input type="text" id="shareURL">
+			</div>
+		</div>
+		<div id="wrap">
+			<textarea itemprop="description" id="recode" name="recode" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">{{printf "%s" .Body}}</textarea>
+		</div>
+		<div id="output"></div>
 	</body>
 </html>

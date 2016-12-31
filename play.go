@@ -5,15 +5,14 @@ import (
 	"net/http"
 )
 
+func init() { http.HandleFunc("/", play) }
+
 var playTemplate = template.Must(template.ParseFiles("play.html"))
 
 func play(w http.ResponseWriter, r *http.Request) {
 	snip := getSnippet(r)
+	if snip == nil {
+		http.Error(w, "Snippet not found", http.StatusNotFound)
+	}
 	playTemplate.Execute(w, snip)
 }
-
-func getSnippet(r *http.Request) *snippet {
-	return &snippet{Body: []byte(hello)}
-}
-
-const hello = `let myVar = "Helllo";`

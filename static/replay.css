@@ -1,0 +1,125 @@
+html {
+	height: 100%;
+}
+
+body {
+	color: #444444;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+a {
+	color: #009;
+}
+
+.CodeMirror {
+  font-family: Inconsolata, monospace;
+}
+
+#wrap {
+	margin: 0;
+
+	position: absolute;
+	top: 80px;
+	bottom: 25%;
+	left: 0;
+	right: 0;
+}
+
+#recode {
+	color: black;
+	background: inherit;
+
+	width: 100%;
+	height: 100%;
+	padding: 0; margin: 0;
+	border: none;
+	outline: none;
+	resize: none;
+	wrap: off;
+	float: right;
+}
+
+#output {
+	position: absolute;
+	top: 75%;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+#banner {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	height: 80px;
+	background-color: #F6F4F4;
+}
+
+#logo {
+	height: 65%;
+}
+
+#head {
+	float: left;
+	padding: 15px 14px;
+
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	font-size: 25px;
+	font-family: montserrat;
+}
+
+#controls {
+	float: left;
+	padding: 29px 15px;
+	min-width: 245px;
+}
+#controls > input {
+	border-radius: 3px;
+}
+
+input[type=button] {
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	height: 40px;
+	border: 1px solid #DD4B39;
+	font-size: 16px;
+	font-family: montserrat, sans-serif;
+	font-weight: bold;
+	background: #DD4B39;
+	color: #fff;
+	position: static;
+	top: 1px;
+	transition: border-color 0.2s ease;
+	display: inline-block;
+	border-bottom: solid 3px #d24736;
+	-webkit-border-radius: 1px;
+	border-radius: 1px;
+	margin-right: 10px;
+}
+
+input[type=button],
+input[type=button]:visited {
+  background: #dd4b39;
+  color: #fff;
+  text-shadow: none;
+}
+
+input[type=button]:hover {
+  background: #c74433;
+  border-bottom: solid 3px #bc4030;
+  color: #fff;
+}
+
+#shareURL {
+	width: 280px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	background: #eee;
+	color: #959595;
+	height: 30px;
+}
