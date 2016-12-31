@@ -1,0 +1,7 @@
+service: sandbox
+runtime: custom
+env: flex
+
+health_check:
+  check_interval_sec: 20
+  restart_threshold: 10
