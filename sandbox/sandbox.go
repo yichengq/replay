@@ -8,9 +8,33 @@ import (
 )
 
 func main() {
+	http.HandleFunc("/format", formatHandler)
 	http.HandleFunc("/compile", compileHandler)
 	http.HandleFunc("/_ah/health", healthHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+type result struct {
+	output []byte
+	errStr string
+}
+
+func formatHandler(w http.ResponseWriter, r *http.Request) {
+	code, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error reading code: %v", err), http.StatusBadRequest)
+		return
+	}
+	res, err := formatReason(code)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if res.errStr != "" {
+		http.Error(w, res.errStr, http.StatusBadRequest)
+		return
+	}
+	w.Write(res.output)
 }
 
 func compileHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,13 +43,16 @@ func compileHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("error reading code: %v", err), http.StatusBadRequest)
 		return
 	}
-	output, err := compile(code, compileToJS)
+	res, err := compile(code, compileToJS)
 	if err != nil {
-		// TODO: separate internal server error
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Write(output)
+	if res.errStr != "" {
+		http.Error(w, res.errStr, http.StatusBadRequest)
+		return
+	}
+	w.Write(res.output)
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {

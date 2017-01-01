@@ -1,14 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 func healthCheck() error {
-	output, err := compile([]byte(healthReason), compileToJS)
+	res, err := compile([]byte(healthReason), compileToJS)
 	if err != nil {
 		return err
 	}
-	if string(output) != wantHealthJs {
-		return fmt.Errorf("compiled JS = %q, want %q", string(output), wantHealthJs)
+	if res.errStr != "" {
+		return errors.New(res.errStr)
+	}
+	if string(res.output) != wantHealthJs {
+		return fmt.Errorf("compiled JS = %q, want %q", string(res.output), wantHealthJs)
 	}
 	return nil
 }

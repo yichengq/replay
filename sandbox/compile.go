@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
 )
 
 type compileType int
@@ -16,7 +17,7 @@ const (
 	compileToML
 )
 
-func compile(code []byte, typ compileType) ([]byte, error) {
+func compile(code []byte, typ compileType) (*result, error) {
 	if typ == compileToML {
 		// unsupported yet
 		return nil, errors.New("unsupported compile type")
@@ -33,11 +34,15 @@ func compile(code []byte, typ compileType) ([]byte, error) {
 	}
 	cmd := exec.Command(os.Getenv("BSC_BIN"), "-pp", os.Getenv("REFMT_BIN"), "-impl", srcFile)
 	if output, err := cmd.CombinedOutput(); err != nil {
+		if _, ok := err.(*exec.ExitError); ok {
+			errStr := strings.Replace(string(output), srcFile, "prog.re", -1)
+			return &result{errStr: errStr}, nil
+		}
 		return nil, fmt.Errorf("failed to run bsc: %+v, output=%q", err, string(output))
 	}
 	bs, err := ioutil.ReadFile(destFile)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read file: %+v", err)
 	}
-	return bs, nil
+	return &result{output: bs}, nil
 }
