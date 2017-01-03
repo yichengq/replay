@@ -8,14 +8,14 @@ import (
 	"appengine/urlfetch"
 )
 
-const compileURL = "https://sandbox-dot-replay-154206.appspot-preview.com/compile"
+const formatURL = "https://sandbox-dot-replay-154206.appspot-preview.com/format"
 
-func init() { http.HandleFunc("/compile", compile) }
+func init() { http.HandleFunc("/format", format) }
 
-func compile(w http.ResponseWriter, r *http.Request) {
+func format(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	client := urlfetch.Client(ctx)
-	resp, err := client.Post(compileURL, "text/plain", r.Body)
+	resp, err := client.Post(formatURL, "text/plain", r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

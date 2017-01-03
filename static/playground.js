@@ -47,20 +47,41 @@
       opts.codeMirror.setValue(text);
     }
 
-    function fmt() {
-      loading();
-      var data = {"body": body()};
-      $.ajax("/fmt", {
-        data: data,
+    function run() {
+      $.ajax("/compile", {
+        data: body(),
         type: "POST",
-        dataType: "json",
-        success: function(data) {
-          if (data.Error) {
-            setError(data.Error);
-          } else {
-            setBody(data.Body);
-            setError("");
+        dataType: "text",
+        complete: function(xhr) {
+          if (xhr.status == 200) {
+            evalCode(xhr.responseText);
+            return;
           }
+          if (xhr.status == 400) {
+            opts.outputMirror.setValue(xhr.responseText);
+            return;
+          }
+          alert("Server error; try again.\nError: " + xhr.responseText);
+        }
+      });
+    }
+
+    function fmt() {
+      $.ajax("/format", {
+        data: body(),
+        type: "POST",
+        dataType: "text",
+        complete: function(xhr) {
+          if (xhr.status == 200) {
+            setBody(xhr.responseText);
+            opts.outputMirror.setValue("");
+            return;
+          }
+          if (xhr.status == 400) {
+            opts.outputMirror.setValue(xhr.responseText);
+            return;
+          }
+          alert("Server error; try again.\nError: " + xhr.responseText);
         }
       });
     }
@@ -103,8 +124,8 @@
 
     opts.codeMirror.on("changes", onInputChanges);
     $(opts.shareEl).click(share);
-    //$(opts.runEl).click(run);
-    //$(opts.fmtEl).click(fmt);
+    $(opts.runEl).click(run);
+    $(opts.fmtEl).click(fmt);
   }
 
   window.playground = playground;
