@@ -1,3 +1,6 @@
+'use strict';
+
+var exports = window;
 (function() {
   function playground(opts) {
     var PROMPT = "> " ;
