@@ -18,7 +18,7 @@ func formatReason(code []byte) (*result, error) {
 	if err := ioutil.WriteFile(srcFile, code, 0755); err != nil {
 		return nil, fmt.Errorf("failed to write source file: %+v", err)
 	}
-	cmd := exec.Command(os.Getenv("REFMT_BIN"), "-parse", "re", "-print", "re", srcFile)
+	cmd := exec.Command(os.Getenv("REFMT_BIN"), "--parse", "re", "--print", "re", srcFile)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		if _, ok := err.(*exec.ExitError); ok {
