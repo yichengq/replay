@@ -43,7 +43,12 @@ func compileHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("error reading code: %v", err), http.StatusBadRequest)
 		return
 	}
-	res, err := compile(code, compileToJS)
+	ct, err := parseCompileType(r.FormValue("type"))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("invalid compile type %q: %v", r.FormValue("type"), err), http.StatusBadRequest)
+		return
+	}
+	res, err := compile(code, ct)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

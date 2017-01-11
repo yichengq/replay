@@ -8,7 +8,7 @@ import (
 	"appengine/urlfetch"
 )
 
-const compileURL = "https://sandbox-dot-replay-154206.appspot-preview.com/compile"
+const compileURL = "https://sandbox-dot-replay-154206.appspot-preview.com/compile?type=to_js"
 
 func init() { http.HandleFunc("/compile", compile) }
 
