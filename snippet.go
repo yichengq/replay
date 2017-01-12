@@ -12,7 +12,8 @@ import (
 	"appengine/datastore"
 )
 
-const hello = `let myVar = "Hello";`
+const hello = `let myVar = "Hello";
+print_endline myVar;`
 
 const salt = "[replace this with something unique]"
 

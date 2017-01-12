@@ -14,40 +14,29 @@
 		<script src="/static/playground.js"></script>
 		<link rel="stylesheet" href="/static/replay.css">
 		<script>
-			'use strict';
+'use strict';
+
 $(document).ready(function() {
-	var reCodeMirror = CodeMirror.fromTextArea(
-		document.getElementById("recode"),
-		{
-			mode:'text/x-ocaml',
-			lineNumbers: true,
-			lineWrapping: true,
-			styleActiveLine:true,
-			theme: "solarized"
-		});
-	reCodeMirror.setSize(null,"100%");
-	var outputMirror = CodeMirror(
-		document.getElementById("output"),
-		{
-			mode : 'javascript',
-			readOnly: true,
-			lineWrapping: true,
-			lineNumbers: true,
-			theme: "monokai"
-		});
-	outputMirror.setSize(null,"100%");
 	playground({
-		'runEl':        '#run',
+		'runEl':        '#run, #embedRun',
 		'fmtEl':        '#fmt',
 		'shareEl':      '#share',
 		'shareURLEl':   '#shareURL',
-		'codeMirror':   reCodeMirror,
-		'outputMirror':    outputMirror,
+		'inputEl':      '#recode',
+		'outputEl':     '#output',
+		'embedEl':      '#embed',
+		'embedPopEl':   '#embedPop',
+		'embedOutEl':   '#embedOut'
 	});
+
+	if(window.self !== window.top) {
+		$("body").addClass("embedded");
+	}
 });
 		</script>
 	</head>
 	<body>
+		<input type="button" value="Run" id="embedRun">
 		<div id="banner">
 			<div id="head" itemprop="name"><img src="/static/logo.png" id="logo"> Playground</div>
 			<div id="controls">
@@ -55,11 +44,20 @@ $(document).ready(function() {
 				<input type="button" value="Format" id="fmt">
 				<input type="button" value="Share" id="share">
 				<input type="text" id="shareURL">
+				<input type="button" value="Embed" id="embed">
 			</div>
 		</div>
 		<div id="wrap">
 			<textarea itemprop="description" id="recode" name="recode" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">{{printf "%s" .Body}}</textarea>
 		</div>
 		<div id="output"></div>
+
+		<div id="embedPop" class="popout">
+			<div class="popout-content">
+				<h4>Copy & Paste Code</h4>
+				<textarea itemprop="description" id="embedOut" spellcheck="false" readonly></textarea>
+			</div>
+		</div>
+
 	</body>
 </html>
