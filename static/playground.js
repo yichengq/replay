@@ -204,7 +204,7 @@ var exports = window;
         "data-host": window.location.host,
         "data-height": "256",
         "data-font-size": "12px",
-        "class": "replay"
+        "class": "replay-embed"
       };
       var output = "<p ";
       for (var k in attributes) {

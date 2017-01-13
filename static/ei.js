@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   function enjectAll() {
-    for (var embeds = document.getElementsByClassName("replay"), i = 0; i < embeds.length; i++){
+    for (var embeds = document.getElementsByClassName("replay-embed"), i = 0; i < embeds.length; i++){
       var data = getDataAttributes(embeds[i]);
       var content = createEmbededIframe(data);
       enjectElement(embeds[i],content);
