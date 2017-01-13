@@ -89,6 +89,9 @@ var exports = window;
         data: input.getValue(),
         type: "POST",
         dataType: "text",
+        beforeSend: function () {
+          output.setValue("Waiting for remote server...")
+        },
         complete: function(xhr) {
           if (runningId != currId) return;
           if (xhr.status == 200) {
@@ -109,6 +112,9 @@ var exports = window;
         data: input.getValue(),
         type: "POST",
         dataType: "text",
+        beforeSend: function () {
+          output.setValue("Waiting for remote server...")
+        },
         complete: function(xhr) {
           if (xhr.status == 200) {
             input.setValue(xhr.responseText);
