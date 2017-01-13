@@ -11,12 +11,17 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/addon/edit/matchbrackets.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/addon/edit/closebrackets.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script src="/static/url.min.js"></script>
 		<script src="/static/playground.js"></script>
-		<link rel="stylesheet" href="/static/replay.css">
+		<link rel="stylesheet" href="/static/style.css">
 		<script>
 'use strict';
 
 $(document).ready(function() {
+	if(window.self !== window.top) {
+		$("body").addClass("embedded");
+	}
+
 	playground({
 		'runEl':        '#run, #embedRun',
 		'fmtEl':        '#fmt',
@@ -26,12 +31,11 @@ $(document).ready(function() {
 		'outputEl':     '#output',
 		'embedEl':      '#embed',
 		'embedPopEl':   '#embedPop',
-		'embedOutEl':   '#embedOut'
+		'embedOutEl':   '#embedOut',
+		'style': {
+			'font-size': url('?font-size')
+		}
 	});
-
-	if(window.self !== window.top) {
-		$("body").addClass("embedded");
-	}
 });
 		</script>
 	</head>
@@ -47,9 +51,8 @@ $(document).ready(function() {
 				<input type="button" value="Embed" id="embed">
 			</div>
 		</div>
-		<div id="wrap">
-			<textarea itemprop="description" id="recode" name="recode" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false">{{printf "%s" .Body}}</textarea>
-		</div>
+
+		<div id="recode" name="recode">{{printf "%s" .Body}}</div>
 		<div id="output"></div>
 
 		<div id="embedPop" class="popout">

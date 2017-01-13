@@ -1,9 +1,8 @@
 (function(){
   'use strict';
   function enjectAll() {
-    for (var embeds=document.getElementsByClassName("replay"), i=0; i<embeds.length; i++){
+    for (var embeds = document.getElementsByClassName("replay"), i = 0; i < embeds.length; i++){
       var data = getDataAttributes(embeds[i]);
-      console.log(data);
       var content = createEmbededIframe(data);
       enjectElement(embeds[i],content);
     }
@@ -11,11 +10,10 @@
 
   function getDataAttributes(e) {
     var output = {};
-    for(var attributes=e.attributes, i=0;i<attributes.length;i++){
+    for(var attributes = e.attributes, i = 0; i < attributes.length; i++){
       var name = attributes[i].name;
-      if (name.indexOf("data-")===0){
-      console.log(name);
-        output[name.replace("data-","")]=attributes[i].value;
+      if (name.indexOf("data-") === 0){
+        output[name.replace("data-","")] = attributes[i].value;
       }
     }
     return output;
@@ -24,7 +22,7 @@
   function createEmbededIframe(data) {
     var attributes = {
       id: "re_embed_"+data.id,
-      src: protocol()+"//"+data.host+"/p/"+data.id,
+      src: protocol() + "//" + data.host + "/p/" + data.id + query(data),
       scrolling:"no",
       frameborder:"0",
       name:"Reaon Playground Embed",
@@ -34,21 +32,25 @@
       width: "100%",
       height: data.height?data.height:"300",
       class: "re_embed_iframe",
-      style: "overflow: hidden;"
+      style: "overflow: hidden; border: solid 1px #eee;"
     };
     var output = "<iframe ";
     for (var k in attributes) {
-      output += k+'="'+attributes[k]+'" ';
+      output += k + '="' + attributes[k] + '" ';
     }
     return output+"></iframe>";
   }
 
   function protocol() {
     var protocol = document.location.protocol;
-    if (protocol==="file:") {
+    if (protocol === "file:") {
       protocol = "http:";
     }
     return protocol;
+  }
+
+  function query(d) {
+    return "?font-size=" + d["font-size"];
   }
 
   function enjectElement(curDom, content) {
@@ -63,7 +65,7 @@
   }
 
   function docReadyRun(f) {
-    /in/.test(document.readyState)?setTimeout("window.__re_docRun("+f+")",9):f();
+    /in/.test(document.readyState)?setTimeout("window.__re_docRun("+f+")", 9):f();
   }
 
   window.__re_docRun = docReadyRun;

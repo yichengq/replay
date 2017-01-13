@@ -53,7 +53,10 @@ var exports = window;
 
   var pushedEmpty = (window.location.pathname == "/");
   function playground(opts) {
-    var input = CodeMirror.fromTextArea(
+
+    var hello = $(opts.inputEl).text();
+    $(opts.inputEl).text("");
+    var input = CodeMirror(
         $(opts.inputEl)[0],
         {
           mode:'text/x-ocaml',
@@ -63,6 +66,7 @@ var exports = window;
           theme: "solarized"
         });
     input.setSize(null,"100%");
+    input.setValue(hello);
     var output = CodeMirror(
         $(opts.outputEl)[0],
         {
@@ -73,6 +77,9 @@ var exports = window;
           theme: "monokai"
         });
     output.setSize(null,"100%");
+    if(opts.style['font-size']) {
+      $(".CodeMirror").css("font-size", opts.style['font-size']);
+    }
 
     function onInputChanges() {
       if (pushedEmpty) return;
@@ -81,30 +88,39 @@ var exports = window;
       window.history.pushState(null, "", "/");
     }
 
-    var runningId = 0;
-    function run() {
-      runningId++;
-      var currId = runningId;
-      $.ajax("/compile", {
-        data: input.getValue(),
-        type: "POST",
-        dataType: "text",
-        beforeSend: function () {
-          output.setValue("Waiting for remote server...")
-        },
-        complete: function(xhr) {
-          if (runningId != currId) return;
-          if (xhr.status == 200) {
-            output.setValue(jsRunner.eval(xhr.responseText));
-            return;
+    function loading() {
+      output.setValue('Waiting for remote server...');
+    }
+
+    function runner(rType) {
+      var runningId = 0;
+      return function() {
+        loading();
+        runningId++;
+        var currId = runningId;
+        $.ajax("/compile?type="+rType, {
+          data: input.getValue(),
+          type: "POST",
+          dataType: "text",
+          beforeSend: loading,
+          complete: function(xhr) {
+            if (runningId != currId) return;
+            if (xhr.status == 200) {
+              if (rType === "to_js") {
+                output.setValue(jsRunner.eval(xhr.responseText));
+              } else {
+                output.setValue(xhr.responseText);
+              }
+              return;
+            }
+            if (xhr.status == 400) {
+              output.setValue(xhr.responseText);
+              return;
+            }
+            alert("Server error; try again.\nError: " + xhr.responseText);
           }
-          if (xhr.status == 400) {
-            output.setValue(xhr.responseText);
-            return;
-          }
-          alert("Server error; try again.\nError: " + xhr.responseText);
-        }
-      });
+        });
+      };
     }
 
     function fmt() {
@@ -112,9 +128,7 @@ var exports = window;
         data: input.getValue(),
         type: "POST",
         dataType: "text",
-        beforeSend: function () {
-          output.setValue("Waiting for remote server...")
-        },
+        beforeSend: loading,
         complete: function(xhr) {
           if (xhr.status == 200) {
             input.setValue(xhr.responseText);
@@ -189,6 +203,7 @@ var exports = window;
         "data-id": id,
         "data-host": window.location.host,
         "data-height": "256",
+        "data-font-size": "12px",
         "class": "replay"
       };
       var output = "<p ";
@@ -202,7 +217,7 @@ var exports = window;
 
     input.on("changes", onInputChanges);
     $(opts.shareEl).click(share);
-    $(opts.runEl).click(run);
+    $(opts.runEl).click(runner("to_run"));
     $(opts.fmtEl).click(fmt);
     $(opts.embedEl).click(embed);
     $(window).click(function( event ) {

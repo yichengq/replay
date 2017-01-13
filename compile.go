@@ -12,7 +12,7 @@ import (
 	"appengine/urlfetch"
 )
 
-const compileURL = "https://sandbox-dot-replay-154206.appspot-preview.com/compile?type=to_js"
+const compileURL = "https://sandbox-dot-replay-154206.appspot-preview.com/compile?type="
 
 func init() { http.HandleFunc("/compile", compile) }
 
@@ -24,10 +24,14 @@ type result struct {
 func compile(w http.ResponseWriter, r *http.Request) {
 	ctx := appengine.NewContext(r)
 	client := urlfetch.Client(ctx)
+	compileType := r.URL.Query().Get("type")
+	if compileType == "" {
+		compileType = "to_run"
+	}
 
 	body := io.Reader(r.Body)
 	var input []byte
-	if r.ContentLength >= 0 && r.ContentLength < 250 {
+	if r.ContentLength >= 0 && r.ContentLength < 250 && compileType == "to_run" {
 		var err error
 		input, err = ioutil.ReadAll(body)
 		if err != nil {
@@ -47,7 +51,7 @@ func compile(w http.ResponseWriter, r *http.Request) {
 		body = bytes.NewBuffer(input)
 	}
 
-	resp, err := client.Post(compileURL, "text/plain", body)
+	resp, err := client.Post(compileURL+compileType, "text/plain", body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

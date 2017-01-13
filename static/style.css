@@ -15,31 +15,21 @@ a {
 }
 
 .CodeMirror {
-  font-family: Inconsolata, monospace;
+	font-family: Menlo, monospace;
 }
 
-#wrap {
-	margin: 0;
+.cm-s-solarized.CodeMirror {
+	box-shadow:none;
+	-webkit-box-shadow:none;
+}
 
+#recode {
+	margin: 0;
 	position: absolute;
 	top: 80px;
 	bottom: 25%;
 	left: 0;
 	right: 0;
-}
-
-#recode {
-	color: black;
-	background: inherit;
-
-	width: 100%;
-	height: 100%;
-	padding: 0; margin: 0;
-	border: none;
-	outline: none;
-	resize: none;
-	wrap: off;
-	float: right;
 }
 
 #output {
@@ -126,7 +116,7 @@ input[type=button]:hover {
 	display: none;
 }
 
-.embedded #wrap {
+.embedded #recode {
 	top: 0;
 }
 
