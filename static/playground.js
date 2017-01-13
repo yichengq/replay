@@ -210,8 +210,11 @@ var exports = window;
       for (var k in attributes) {
         output += k + '="' + attributes[k] + '" ';
       }
-      output += "></p>";
-      output += ' <script async src="' + origin(window.location) + '/static/ei.js"></script>';
+      output += ">\n";
+      output += "<!--- Snippet Generated Through Replay\n";
+      output += input.getValue() + "\n";
+      output += "-->\n";
+      output += '</p> <script async src="' + origin(window.location) + '/static/ei.js"></script>';
       return output;
     }
 
