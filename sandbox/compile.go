@@ -36,14 +36,14 @@ func compile(code []byte, typ compileType) (*result, error) {
 	if err != nil {
 		return nil, err
 	}
-	srcFile := path.Join(tmpDir, "hello.re")
+	srcFile := path.Join(tmpDir, "prog.re")
 	if err := ioutil.WriteFile(srcFile, code, 0755); err != nil {
 		return nil, fmt.Errorf("failed to write source file: %+v", err)
 	}
 
 	switch typ {
 	case compileToJS:
-		destFile := path.Join(tmpDir, "hello.js")
+		destFile := path.Join(tmpDir, "prog.js")
 		cmd := exec.Command(os.Getenv("BSC_BIN"), "-pp", os.Getenv("REFMT_BIN"), "-impl", srcFile)
 		if output, err := cmd.CombinedOutput(); err != nil {
 			if _, ok := err.(*exec.ExitError); ok {
@@ -58,13 +58,12 @@ func compile(code []byte, typ compileType) (*result, error) {
 		}
 		return &result{output: bs}, nil
 	case compileToRun:
-		destFile := path.Join(tmpDir, "hello.native")
-		cmd := exec.Command(os.Getenv("REBUILD_BIN"), "hello.native")
+		destFile := path.Join(tmpDir, "prog.native")
+		cmd := exec.Command(os.Getenv("REBUILD_BIN"), "prog.native")
 		cmd.Dir = tmpDir
 		if output, err := cmd.CombinedOutput(); err != nil {
 			if _, ok := err.(*exec.ExitError); ok {
-				errStr := strings.Replace(string(output), destFile, "prog.native", -1)
-				return &result{errStr: errStr}, nil
+				return &result{errStr: polishReasonBinsOutput(output)}, nil
 			}
 			return nil, fmt.Errorf("failed to compile: %+v, output=%q", err, string(output))
 		}
@@ -73,8 +72,7 @@ func compile(code []byte, typ compileType) (*result, error) {
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			if _, ok := err.(*exec.ExitError); ok {
-				errStr := strings.Replace(string(output), destFile, "prog.native", -1)
-				return &result{errStr: errStr}, nil
+				return &result{errStr: polishReasonBinsOutput(output)}, nil
 			}
 			return nil, fmt.Errorf("failed to run: %+v, output=%q", err, string(output))
 		}

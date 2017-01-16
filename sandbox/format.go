@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"strings"
 )
 
 func formatReason(code []byte) (*result, error) {
@@ -14,7 +13,7 @@ func formatReason(code []byte) (*result, error) {
 	if err != nil {
 		return nil, err
 	}
-	srcFile := path.Join(tmpDir, "hello.re")
+	srcFile := path.Join(tmpDir, "prog.re")
 	if err := ioutil.WriteFile(srcFile, code, 0755); err != nil {
 		return nil, fmt.Errorf("failed to write source file: %+v", err)
 	}
@@ -22,8 +21,7 @@ func formatReason(code []byte) (*result, error) {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		if _, ok := err.(*exec.ExitError); ok {
-			errStr := strings.Replace(string(output), srcFile, "prog.re", -1)
-			return &result{errStr: errStr}, nil
+			return &result{errStr: polishReasonBinsOutput(output)}, nil
 		}
 		return nil, fmt.Errorf("failed to run bsc: %+v, output=%q", err, string(output))
 	}
